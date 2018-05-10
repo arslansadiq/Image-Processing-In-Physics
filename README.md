@@ -16,18 +16,18 @@ Graduate Level Course of Technical University of Munich
  Oriented towards practical implementations  
 ## Course content
  ### A. Basics of Image Processing
- A.1 Image processing in spatial domain
- A.2 Image processing in Fourier domain
- A.3 Sampling, interpolation and pixel representations
- A.4 Segmentation
+ A.1 Image processing in spatial domain  
+ A.2 Image processing in Fourier domain  
+ A.3 Sampling, interpolation and pixel representations  
+ A.4 Segmentation  
  ### B.	Wave	optics	and	instrumentation
- B.1	Detectors	&	noise
- B.2	Wave	propagation
- B.3	Phase	retrieval
- B.4	Grating-based	imaging
+ B.1	Detectors	&	noise  
+ B.2	Wave	propagation  
+ B.3	Phase	retrieval  
+ B.4	Grating-based	imaging  
  ### C.	Abstract	algorithms	and	optimization
- C.1	Tomography
- C.2	Least	squares	optimization
- C.3	Wavelets
+ C.1	Tomography  
+ C.2	Least	squares	optimization  
+ C.3	Wavelets  
 ## Exercise Tutorials
- Hands-on computer exercises on the topics covered in class in Python
+ Hands-on computer exercises on the topics covered in class in Python  
