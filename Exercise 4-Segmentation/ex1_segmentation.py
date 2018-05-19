@@ -46,7 +46,7 @@ plt.imshow(img_bin, cmap='gray', interpolation='none')
 # Now with the binary image use the opening and closing to bring the star
 # to compacter format. Take care that no star connects to another
 
-s1 = np.array([[0, 1, 0], [1, 1, 1], [0, 1, 0]])
+s1 = np.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]])
 img_bin1 = nd.binary_closing(img_bin, structure=s1)
 
 plt.figure(3)
@@ -118,4 +118,4 @@ mass_list_sorted = mass_list_sorted[0:len (mass_list_sorted) - 2]
 
 plt.figure(9)
 plt.title("sizes of stars")
-plt.hist(mass_list_sorted, 200)
+plt.hist(mass_list_sorted, bins = 200, range = (0, 200), align = 'left')
