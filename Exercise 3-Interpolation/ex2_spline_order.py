@@ -46,7 +46,7 @@ img_order0 = img_cropped
 img_order1 = img_cropped
 img_order2 = img_cropped
 img_order3 = img_cropped
-img_order4 = img_cropped
+img_order5 = img_cropped
 
 # Creates a figure instance that will be updated in the loop. Change therefore
 # the Graphics backend of the Ipython console in the preferences of Spyder from
@@ -62,16 +62,16 @@ while step <= Nsteps:
 
     print('rotation No ' + str(step) + ' angle ' + str(step * angle))
 
-    # Use nd.rotate to rotate the image. Interpolation is done using splines
+    # Use ndi.rotate to rotate the image. Interpolation is done using splines
     # of certain order which can be passed as a variable. Please use order
     # 0 (nearest neighbor), 1 (bilinear), 2 (biquadratic), 3 (bicubic), and 5
     # also use the option reshape=False
 
-    img_order0 = nd.rotate(img_order0, angle, order = 0, reshape = False)
-    img_order1 = nd.rotate(img_order1, angle, order = 1, reshape = False)
-    img_order2 = nd.rotate(img_order2, angle, order = 2, reshape = False)
-    img_order3 = nd.rotate(img_order3, angle, order = 3, reshape = False)
-    img_order5 = nd.rotate(img_order4, angle, order = 4, reshape = False)
+    img_order0 = nd.interpolation.rotate(img_order0, angle=angle, order=0, reshape = False)
+    img_order1 = nd.interpolation.rotate(img_order1, angle=angle, order=1, reshape = False)
+    img_order2 = nd.interpolation.rotate(img_order2, angle=angle, order=2, reshape = False)
+    img_order3 = nd.interpolation.rotate(img_order3, angle=angle, order=3, reshape = False)
+    img_order5 = nd.interpolation.rotate(img_order5, angle=angle, order=5, reshape = False)
 
     # Plot the resulting images at the current step
 
@@ -98,7 +98,7 @@ while step <= Nsteps:
 
     # Increment the counter
 
-    step += 1
+    step = step+1
 
 # Plot final results
 
