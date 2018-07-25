@@ -31,7 +31,7 @@ plt.colorbar()
 # Also plot a line profile through the middle row.
 
 plt.figure()
-plt.plot(proj[:][proj.shape[0]//2])
+plt.plot(proj[proj.shape[0]//2][:])
 
 # The parameters of the setup that influence the image formation process are
 # specified below.
@@ -39,7 +39,7 @@ plt.plot(proj[:][proj.shape[0]//2])
 pixel_size = .964e-6
 distance = 8.57e-3
 
-# As Paganin assumes a single material which has to be known beforehand, we look
+# As Paganin assumes a single material which has to be know beforehand, we look
 # up the absorption index and the decrement of the real part of the complex
 # refractive index in some database for the given energy. I do that for you.
 
@@ -55,12 +55,12 @@ ky, kx = np.meshgrid(v, u, indexing='ij')
 
 # Build the Paganin kernel. Its representation was discussed in the lecture.
 
-Paganin = 1 / ((distance*(delta/mu))*(ky**2 + kx**2) + 1)
+Paganin = (1/(distance*(delta/mu)*(kx**2 + ky**2) + 1))
 
 # Recover the thickness from the projection by applying the Paganin kernel onto
 # the intensity measurement.
 
-trace = (-1/mu)*(np.log(np.fft.ifft2(Paganin * np.fft.fft2(proj))))
+trace = np.multiply(np.divide(-1, mu), np.log(np.fft.ifft2(np.multiply(Paganin, np.fft.fft2(proj)))))
 
 # Plot the recovered thickness of the sample in microns. Also plot a line
 # through the center row of the trace. Check if the retrieved thickness matches
@@ -68,8 +68,9 @@ trace = (-1/mu)*(np.log(np.fft.ifft2(Paganin * np.fft.fft2(proj))))
 
 plt.figure()
 plt.title('trace')
-plt.imshow(trace.real*1e6, cmap='gray', interpolation='none')
+plt.imshow(np.real(trace), cmap='gray', interpolation='none')
 plt.colorbar()
 
 plt.figure()
-plt.plot(trace[:][trace.shape[0]//2]*1e6)
+plt.plot((trace[trace.shape[0]//2][:])*np.power(10, 6))
+plt.ylabel('thickness in microns')
