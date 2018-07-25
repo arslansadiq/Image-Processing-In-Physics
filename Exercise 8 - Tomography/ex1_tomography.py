@@ -42,7 +42,7 @@ def roundmask(shape, radius=1):
 def forwardproject(sample, angles):
     """
     Simulate data aquisition in tomography from line projections.
-    Forwardproject a given input sample slice to abtain a simulated sinogram.
+    Forwardproject a given input sample slice to obtain a simulated sinogram.
 
     Hints
     -----
@@ -59,8 +59,8 @@ def forwardproject(sample, angles):
     for proj in np.arange(Nproj):  # loop over all projections
         sys.stdout.write("\r Simulating:     %03i/%i" % (proj+1, Nproj))
         sys.stdout.flush()
-        im_rot = ???
-        sinogram[???] = ???
+        im_rot = nd.rotate(sample, angles[proj], reshape=False)
+        sinogram[proj,:] = np.sum(im_rot, axis=0)
     return sinogram
 
 
@@ -77,15 +77,15 @@ def filter_sino(sinogram):
 
     # Generate basic ramp filter (hint: there is the function np.fft.fftfreq.
     # Try it and see what it does. Watch out for a possible fftshift)
-    ramp_filter = ???
+    ramp_filter = np.abs(np.fft.fftfreq(Npix))
 
     # filter the sinogram in Fourier space in detector pixel direction
     # Use the np.fft.fft along the axis=1
-    sino_ft = ???
+    sino_ft = np.fft.fft(sinogram, axis=1)
 
     # Multiply the ramp filter onto the 1D-FT of the sinogram and transform it
     # back into spatial domain
-    sino_filtered = ???
+    sino_filtered = np.real(np.fft.ifft(sino_ft * ramp_filter, axis=1))
 
     return sino_filtered
 
@@ -113,10 +113,10 @@ def backproject(sinogram, angles):
 
         backprojection = np.tile(sinogram[proj, :], (Npix, 1))
         backprojection /= Npix  # Just normalization
-        rotated_backprojection = ???
+        rotated_backprojection = nd.rotate(backprojection, -angles[proj], reshape=False)
 
         # Add the rotated backprojection multiplied with a roundmask
-        reconstruction += ???
+        reconstruction += rotated_backprojection * roundmask((Npix, Npix))
 
     return reconstruction
 
@@ -127,22 +127,22 @@ sample = plt.imread('Head_CT_scan.jpg')
 
 # define vector containing the projection angles
 Nangles = 301
-angles = ???
+angles = np.linspace(0, 360, Nangles, False) 
 
 # simulate the process of tomographic data acquisition by line projections
-sino = ???
+sino = forwardproject(sample, angles)
 
 # use this line if you do not manage the last step
 # sino = np.load('backup_sinogram.npy')
 
 # filter the sinogram with the ramp filter (or some other filter)
-filtered_sino = ???
+filtered_sino = filter_sino(sino)
 
 # use this line if you do not manage the last step
 # filtered_sino = np.load('backup_filtered_sinogram.npy')
 
 # reconstruct the image from its filtered sinogram
-reco = ???
+reco = backproject(filtered_sino, angles)
 
 plt.figure(1, figsize=(12, 12))
 plt.subplot(2, 2, 1)
@@ -166,7 +166,7 @@ angles = np.linspace(0, 360, Nangles, False)
 sino = forwardproject(sample, angles)
 
 # simulate a dead pixel in the detector line
-sino[???] = 0
+sino[:, 120] = 0
 
 # filter the sinogram with the ramp filter and reconstruct it
 filtered_sino = filter_sino(sino)
@@ -198,7 +198,7 @@ sino = forwardproject(sample, angles)
 
 # shift the sinogram by a few pixels (~2) or pad the detector either to the
 # left or right side.
-sino = ???
+np.append(sino, np.ones((Nangles, 10)), axis=1)
 
 # filter the sinogram with the ramp filter and reconstruct it
 filtered_sino = filter_sino(sino)
@@ -218,7 +218,7 @@ plt.imshow(reco, vmin=0, cmap='gray', interpolation='none')
 
 # Artifact 3 - few angles / undersampling
 # ---------------------------------------
-Nangles = ???
+Nangles = 91
 angles = np.linspace(0, 360, Nangles, False)
 
 sino = forwardproject(sample, angles)
@@ -248,7 +248,7 @@ sino = forwardproject(sample, angles)
 
 # simulate one or more missing projections (e.g. replace with zeros) up to a
 # missing projection wedge
-sino[???] = 0
+sino[:100] = 0
 
 # filter the sinogram with the ramp filter and reconstruct it
 filtered_sino = filter_sino(sino)
@@ -274,7 +274,7 @@ angles = np.linspace(0, 360, Nangles, False)
 sino = forwardproject(sample, angles)
 
 # simulate noise
-sino += ???
+sino += 5000 * np.random.standard_normal(sino.shape)
 
 # filter the sinogram with the ramp filter and reconstruct it
 filtered_sino = filter_sino(sino)
